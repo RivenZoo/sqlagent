@@ -134,3 +134,32 @@ func (a *SqlAgent) SelectContext(ctx context.Context, builder sq.Sqlizer, dest i
 	return a.db.SelectContext(ctx, dest, sqlStr, args...)
 }
 
+// TxExecContext exec sql built by sq.InsertBuilder/sq.UpdateBuilder/sq.DeleteBuilder and return result.
+// builder: sq.InsertBuilder, sq.UpdateBuilder or sq.DeleteBuilder
+func TxExecContext(ctx context.Context, tx *sqlx.Tx, builder sq.Sqlizer) (sql.Result, error) {
+	sqlStr, args, err := builder.ToSql()
+	if err != nil {
+		return nil, err
+	}
+	return tx.ExecContext(ctx, sqlStr, args...)
+}
+
+// TxGetContext get one record by sql built by sq.SelectBuilder and scan to dest.
+// builder: sq.SelectBuilder
+func TxGetContext(ctx context.Context, tx *sqlx.Tx, builder sq.Sqlizer, dest interface{}) error {
+	sqlStr, args, err := builder.ToSql()
+	if err != nil {
+		return err
+	}
+	return tx.GetContext(ctx, dest, sqlStr, args...)
+}
+
+// TxSelectContext get one or multi records by sql built by sq.SelectBuilder and scan to dest.
+// builder: sq.SelectBuilder
+func TxSelectContext(ctx context.Context, tx *sqlx.Tx, builder sq.Sqlizer, dest interface{}) error {
+	sqlStr, args, err := builder.ToSql()
+	if err != nil {
+		return err
+	}
+	return tx.SelectContext(ctx, dest, sqlStr, args...)
+}
