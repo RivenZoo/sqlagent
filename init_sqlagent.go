@@ -53,9 +53,26 @@ func readDBConfig(cfgFile string) (*dsncfg.Database, error) {
 	return dbCfg, nil
 }
 
+func setDefaultDBParameters(cfg *dsncfg.Database) {
+	if cfg.Type == dsncfg.MySql {
+		defaultParams := map[string]string{
+			"parseTime":  "true",
+			"charset":    "utf8mb4,utf8",
+			"autocommit": "true",
+			"loc":        "Asia%2FShanghai",
+		}
+		for k, v := range defaultParams {
+			if _, ok := cfg.Parameters[k]; !ok {
+				cfg.Parameters[k] = v
+			}
+		}
+	}
+}
+
 // initSqlAgent init module SqlAgent only once.
 func initSqlAgent(cfg *dsncfg.Database) (err error) {
 	initOnce.Do(func() {
+		setDefaultDBParameters(cfg)
 		defaultAgent, err = NewSqlAgent(cfg)
 	})
 	return
