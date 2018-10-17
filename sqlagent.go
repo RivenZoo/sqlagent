@@ -10,8 +10,9 @@ import (
 )
 
 var (
-	errorWrongConfig = errors.New("database config error")
-	errorWrongArgs   = errors.New("func args error")
+	errorWrongConfig      = errors.New("database config error")
+	errorWrongArgs        = errors.New("func args error")
+	errorNotFoundDBConfig = errors.New("not found database config error")
 )
 
 type SqlAgent struct {
