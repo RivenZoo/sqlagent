@@ -71,6 +71,9 @@ func testExecSql(sa *SqlAgent, table string, t *testing.T) {
 }
 
 func TestSqlAgent_ExecSql(t *testing.T) {
+	// sql: create database test;
+	//      CREATE USER 'test'@'localhost' IDENTIFIED BY 'passwd';
+	//      GRANT ALL PRIVILEGES ON test.* TO 'test'@'localhost';
 	userTable := "testuser"
 	dbName := "test"
 	user := "test"
