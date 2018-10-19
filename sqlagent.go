@@ -17,7 +17,6 @@ var (
 
 type SqlAgent struct {
 	db     *sqlx.DB
-	dbType string
 }
 
 func NewSqlAgent(cfg *dsncfg.Database) (*SqlAgent, error) {
@@ -29,15 +28,16 @@ func NewSqlAgent(cfg *dsncfg.Database) (*SqlAgent, error) {
 		return nil, err
 	}
 	dsn := cfg.DSN()
-	agent := &SqlAgent{
-		dbType: cfg.Type,
-	}
+	agent := &SqlAgent{}
 
 	db, err := sqlx.ConnectContext(context.Background(), driverName(cfg), dsn)
 	if err != nil {
 		return nil, err
 	}
 	agent.db = db
+	if cfg.Type == dsncfg.Postgresql {
+		sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
+	}
 	return agent, nil
 }
 
@@ -78,31 +78,19 @@ func (a *SqlAgent) Transaction(ctx context.Context, opt *sql.TxOptions, fn func(
 // InsertBuilder return squirrel.InsertBuilder for table into
 // into: insert table name
 func (a *SqlAgent) InsertBuilder(into string) sq.InsertBuilder {
-	if a.dbType == dsncfg.Postgresql {
-		return sq.StatementBuilder.PlaceholderFormat(sq.Dollar).Insert(into)
-	}
-	return sq.StatementBuilder.Insert(into)
+	return sq.Insert(into)
 }
 
 func (a *SqlAgent) UpdateBuilder(table string) sq.UpdateBuilder {
-	if a.dbType == dsncfg.Postgresql {
-		return sq.StatementBuilder.PlaceholderFormat(sq.Dollar).Update(table)
-	}
-	return sq.StatementBuilder.Update(table)
+	return sq.Update(table)
 }
 
 func (a *SqlAgent) DeleteBuilder(table string) sq.DeleteBuilder {
-	if a.dbType == dsncfg.Postgresql {
-		return sq.StatementBuilder.PlaceholderFormat(sq.Dollar).Delete(table)
-	}
-	return sq.StatementBuilder.Delete(table)
+	return sq.Delete(table)
 }
 
 func (a *SqlAgent) SelectBuilder(columns ...string) sq.SelectBuilder {
-	if a.dbType == dsncfg.Postgresql {
-		return sq.StatementBuilder.PlaceholderFormat(sq.Dollar).Select(columns...)
-	}
-	return sq.StatementBuilder.Select(columns...)
+	return sq.Select(columns...)
 }
 
 // ExecContext exec sql built by sq.InsertBuilder/sq.UpdateBuilder/sq.DeleteBuilder and return result.
