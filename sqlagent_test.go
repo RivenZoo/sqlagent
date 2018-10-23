@@ -11,20 +11,32 @@ import (
 )
 
 type tableUser struct {
-	ID   int64  `json:"id"` // primary key
-	Name string `json:"name"`
-	UID  int64  `json:"uid"`
+	ID   int64  `json:"id" db:"id"` // primary key
+	Name string `json:"name" db:"name"`
+	UID  int64  `json:"uid" db:"uid"`
 }
 
 func testExecSql(sa *SqlAgent, table string, t *testing.T) {
 	userName := "testuser"
 	uid := 1238278327
 
+	insertNum := 2
+
 	// insert
 	insertBuilder := sa.InsertBuilder(table).
 		Columns("name", "uid").
 		Values(userName, uid)
 	_, err := sa.ExecContext(context.TODO(), insertBuilder)
+	if err != nil {
+		s, _, e := insertBuilder.ToSql()
+		t.Fatalf("ExecContext error: %v, sql: %s,%v", err, s, e)
+	}
+
+	insertBuilder = sa.InsertModelBuilder(table, &tableUser{
+		Name: userName,
+		UID:  int64(uid + 1),
+	}, "id")
+	_, err = sa.ExecContext(context.TODO(), insertBuilder)
 	if err != nil {
 		s, _, e := insertBuilder.ToSql()
 		t.Fatalf("ExecContext error: %v, sql: %s,%v", err, s, e)
@@ -52,10 +64,10 @@ func testExecSql(sa *SqlAgent, table string, t *testing.T) {
 		t.Fatalf("ExecContext error: %v, sql: %s,%v", err, s, e)
 	}
 	n, err := res.RowsAffected()
-	if n != int64(1) {
+	if n != int64(insertNum) {
 		t.Fatalf("RowsAffected n: %d, error: %v", n, err)
 	}
-	
+
 	// delete
 	delBuilder := sa.DeleteBuilder(table).
 		Where("name=?", userName)
@@ -65,7 +77,7 @@ func testExecSql(sa *SqlAgent, table string, t *testing.T) {
 		t.Fatalf("ExecContext error: %v, sql: %s,%v", err, s, e)
 	}
 	n, err = res.RowsAffected()
-	if n != int64(1) {
+	if n != int64(insertNum) {
 		t.Fatalf("RowsAffected n: %d, error: %v", n, err)
 	}
 }
