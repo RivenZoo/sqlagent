@@ -7,6 +7,8 @@ import (
 	"context"
 	"database/sql"
 	sq "gopkg.in/Masterminds/squirrel.v1"
+	"reflect"
+	"fmt"
 )
 
 var (
@@ -93,6 +95,31 @@ func (a *SqlAgent) SelectBuilder(columns ...string) sq.SelectBuilder {
 	return sq.Select(columns...)
 }
 
+func (a *SqlAgent) InsertModelBuilder(into string, model interface{}, ignoreColumns ...string) sq.InsertBuilder {
+	fieldMap := a.db.Mapper.TypeMap(reflect.TypeOf(model))
+	valueMap := a.db.Mapper.FieldMap(reflect.ValueOf(model).Elem())
+
+	builder := sq.Insert(into)
+
+	var params []interface{}
+	var columnNames []string
+
+	for _, v := range fieldMap.Index {
+		name := v.Name
+		if isIgnoreFields(name, ignoreColumns) {
+			continue
+		}
+		if data, ok := valueMap[name]; ok {
+			columnNames = append(columnNames, name)
+			params = append(params, data.Interface())
+		}
+	}
+	if len(columnNames) > 0 {
+		builder = builder.Columns(columnNames...).Values(params...)
+	}
+	return builder
+}
+
 // ExecContext exec sql built by sq.InsertBuilder/sq.UpdateBuilder/sq.DeleteBuilder and return result.
 // builder: sq.InsertBuilder, sq.UpdateBuilder or sq.DeleteBuilder
 func (a *SqlAgent) ExecContext(ctx context.Context, builder sq.Sqlizer) (sql.Result, error) {
@@ -151,4 +178,13 @@ func TxSelectContext(ctx context.Context, tx *sqlx.Tx, builder sq.Sqlizer, dest 
 		return err
 	}
 	return tx.SelectContext(ctx, dest, sqlStr, args...)
+}
+
+func isIgnoreFields(name string, ignore []string) bool {
+	for _, nameIgnore := range ignore {
+		if nameIgnore == name {
+			return true
+		}
+	}
+	return false
 }

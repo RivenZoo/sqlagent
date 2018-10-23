@@ -43,6 +43,10 @@ func SelectBuilder(columns ...string) sq.SelectBuilder {
 	return defaultAgent.SelectBuilder(columns...)
 }
 
+func InsertModelBuilder(into string, model interface{}, ignoreColumns ...string) sq.InsertBuilder {
+	return defaultAgent.InsertModelBuilder(into, model, ignoreColumns...)
+}
+
 // ExecContext exec sql built by sq.InsertBuilder/sq.UpdateBuilder/sq.DeleteBuilder and return result.
 // builder: sq.InsertBuilder, sq.UpdateBuilder or sq.DeleteBuilder
 func ExecContext(ctx context.Context, builder sq.Sqlizer) (sql.Result, error) {
