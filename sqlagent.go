@@ -8,7 +8,6 @@ import (
 	"database/sql"
 	sq "gopkg.in/Masterminds/squirrel.v1"
 	"reflect"
-	"fmt"
 )
 
 var (
@@ -18,7 +17,7 @@ var (
 )
 
 type SqlAgent struct {
-	db     *sqlx.DB
+	db *sqlx.DB
 }
 
 func NewSqlAgent(cfg *dsncfg.Database) (*SqlAgent, error) {
