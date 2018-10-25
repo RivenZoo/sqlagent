@@ -8,6 +8,8 @@ import (
 	"strings"
 	"context"
 	_ "github.com/go-sql-driver/mysql"
+	"os"
+	"github.com/stretchr/testify/assert"
 )
 
 type tableUser struct {
@@ -80,6 +82,19 @@ func testExecSql(sa *SqlAgent, table string, t *testing.T) {
 	if n != int64(insertNum) {
 		t.Fatalf("RowsAffected n: %d, error: %v", n, err)
 	}
+
+	item := tableUser{
+		Name: "name",
+		UID:  1001,
+	}
+	updateBuilder = sa.UpdateBuilder(table)
+	sqlStr, args, err := sa.SetUpdateColumns(updateBuilder, &item, "id").ToSql()
+	if err != nil {
+		t.Fatalf("SetUpdateColumns error: %v", err)
+	}
+	t.Logf("%s,%v", sqlStr, args)
+	assert.Equal(t, "UPDATE testuser SET name = ?, uid = ?", sqlStr, "update sql should be equal")
+	assert.Equal(t, []interface{}{item.Name, item.UID}, args, "update args should be equal")
 }
 
 func TestSqlAgent_ExecSql(t *testing.T) {
@@ -130,4 +145,8 @@ ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`,
 			sa.DB().Exec(dropSql[i])
 		}()
 	}
+}
+
+func TestMain(m *testing.M) {
+	os.Exit(m.Run())
 }
