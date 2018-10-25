@@ -119,6 +119,23 @@ func (a *SqlAgent) InsertModelBuilder(into string, model interface{}, ignoreColu
 	return builder
 }
 
+func (a *SqlAgent) SetUpdateColumns(updateBuilder sq.UpdateBuilder, model interface{}, ignoreColumns ...string) sq.UpdateBuilder {
+	fieldMap := a.db.Mapper.TypeMap(reflect.TypeOf(model))
+	valueMap := a.db.Mapper.FieldMap(reflect.ValueOf(model).Elem())
+	clauses := make(map[string]interface{})
+
+	for _, v := range fieldMap.Index {
+		name := v.Name
+		if isIgnoreFields(name, ignoreColumns) {
+			continue
+		}
+		if data, ok := valueMap[name]; ok {
+			clauses[name] = data.Interface()
+		}
+	}
+	return updateBuilder.SetMap(clauses)
+}
+
 // ExecContext exec sql built by sq.InsertBuilder/sq.UpdateBuilder/sq.DeleteBuilder and return result.
 // builder: sq.InsertBuilder, sq.UpdateBuilder or sq.DeleteBuilder
 func (a *SqlAgent) ExecContext(ctx context.Context, builder sq.Sqlizer) (sql.Result, error) {
