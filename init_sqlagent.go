@@ -139,7 +139,7 @@ func setDefaultDBParameters(cfg *dsncfg.Database) {
 			"parseTime":  "true",
 			"charset":    "utf8mb4,utf8",
 			"autocommit": "true",
-			"loc":        "Asia%2FShanghai",
+			"loc":        "Asia/Shanghai",
 		}
 		for k, v := range defaultParams {
 			if _, ok := cfg.Parameters[k]; !ok {
