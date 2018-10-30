@@ -1,4 +1,7 @@
 # Sqlagent
+
+[![Build Status](https://travis-ci.org/RivenZoo/sqlagent.svg?branch=master)](https://travis-ci.org/RivenZoo/sqlagent)
+
 A golang sql wrap with sqlx and squirrel
 
 Create instance with db config
