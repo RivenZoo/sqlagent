@@ -47,11 +47,14 @@ func testExecSql(sa *SqlAgent, table string, t *testing.T) {
 	// select
 	selectBuilder := sa.SelectBuilder("*").From(table).
 		Where(sq.Eq{"name": userName})
-	userRes := []*tableUser{}
+	userRes := []tableUser{}
 	err = sa.SelectContext(context.TODO(), selectBuilder, &userRes)
 	if err != nil {
 		s, _, e := selectBuilder.ToSql()
 		t.Fatalf("SelectContext error: %v, sql: %s,%v", err, s, e)
+	}
+	if !assert.Equal(t, insertNum, len(userRes)) {
+		t.Fatalf("select record num: %d, expect: %d", len(userRes), insertNum)
 	}
 	t.Logf("%v", userRes)
 
