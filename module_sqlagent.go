@@ -1,9 +1,10 @@
 package sqlagent
 
 import (
-	"github.com/jmoiron/sqlx"
-	"database/sql"
 	"context"
+	"database/sql"
+	"github.com/jmoiron/sqlx"
+	"github.com/jmoiron/sqlx/reflectx"
 	sq "gopkg.in/Masterminds/squirrel.v1"
 )
 
@@ -49,6 +50,16 @@ func InsertModelBuilder(into string, model interface{}, ignoreColumns ...string)
 
 func SetUpdateColumns(updateBuilder sq.UpdateBuilder, model interface{}, ignoreColumns ...string) sq.UpdateBuilder {
 	return defaultAgent.SetUpdateColumns(updateBuilder, model, ignoreColumns...)
+}
+
+// SetDBMapper set mapper for module sqlagent
+func SetDBMapper(mapper *reflectx.Mapper) {
+	defaultAgent.SetDBMapper(mapper)
+}
+
+// ModelColumns use module sqlagent to extract model columns.
+func ModelColumns(model interface{}, ignoreColumns ...string) []string {
+	return defaultAgent.ModelColumns(model, ignoreColumns...)
 }
 
 // ExecContext exec sql built by sq.InsertBuilder/sq.UpdateBuilder/sq.DeleteBuilder and return result.

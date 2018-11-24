@@ -1,11 +1,12 @@
 package sqlagent
 
 import (
-	"github.com/jmoiron/sqlx"
-	"github.com/RivenZoo/dsncfg"
-	"errors"
 	"context"
 	"database/sql"
+	"errors"
+	"github.com/RivenZoo/dsncfg"
+	"github.com/jmoiron/sqlx"
+	"github.com/jmoiron/sqlx/reflectx"
 	sq "gopkg.in/Masterminds/squirrel.v1"
 	"reflect"
 )
@@ -94,6 +95,8 @@ func (a *SqlAgent) SelectBuilder(columns ...string) sq.SelectBuilder {
 	return sq.Select(columns...)
 }
 
+// InsertModelBuilder use name and value of model feild to build insert sql.
+// ignoreColumns should be the same with column name that is converted by sqlx.DB.Mapper.
 func (a *SqlAgent) InsertModelBuilder(into string, model interface{}, ignoreColumns ...string) sq.InsertBuilder {
 	fieldMap := a.db.Mapper.TypeMap(reflect.TypeOf(model))
 	valueMap := a.db.Mapper.FieldMap(reflect.Indirect(reflect.ValueOf(model)))
@@ -119,6 +122,8 @@ func (a *SqlAgent) InsertModelBuilder(into string, model interface{}, ignoreColu
 	return builder
 }
 
+// SetUpdateColumns use name and value of model feild to build update sql.
+// ignoreColumns should be the same with column name that is converted by sqlx.DB.Mapper.
 func (a *SqlAgent) SetUpdateColumns(updateBuilder sq.UpdateBuilder, model interface{}, ignoreColumns ...string) sq.UpdateBuilder {
 	fieldMap := a.db.Mapper.TypeMap(reflect.TypeOf(model))
 	valueMap := a.db.Mapper.FieldMap(reflect.Indirect(reflect.ValueOf(model)))
@@ -164,6 +169,29 @@ func (a *SqlAgent) SelectContext(ctx context.Context, builder sq.Sqlizer, dest i
 		return err
 	}
 	return a.db.SelectContext(ctx, dest, sqlStr, args...)
+}
+
+// SetDBMapper set mapper to sqlx.DB.Mapper.
+// Default mapper use tag `db`, if no tags it will use lower case field name as column name.
+func (a *SqlAgent) SetDBMapper(mapper *reflectx.Mapper) {
+	a.db.Mapper = mapper
+}
+
+// ModelColumns use sqlx.DB.Mapper to extract model table columns name.
+// Columns in ignoreColumns will be ignored.
+// ignoreColumns should be the same with column name that is converted by sqlx.DB.Mapper.
+func (a *SqlAgent) ModelColumns(model interface{}, ignoreColumns ...string) []string {
+	fieldMap := a.db.Mapper.TypeMap(reflect.TypeOf(model))
+
+	columns := make([]string, 0)
+	for _, v := range fieldMap.Index {
+		name := v.Name
+		if isIgnoreFields(name, ignoreColumns) {
+			continue
+		}
+		columns = append(columns, name)
+	}
+	return columns
 }
 
 // TxExecContext exec sql built by sq.InsertBuilder/sq.UpdateBuilder/sq.DeleteBuilder and return result.
