@@ -1,5 +1,15 @@
 <a name=""></a>
-# [](https://github.com/RivenZoo/sqlagent/compare/v1.3.0...v) (2018-11-24)
+# [](https://github.com/RivenZoo/sqlagent/compare/v1.3.1...v) (2018-11-24)
+
+
+
+<a name="1.3.1"></a>
+## [1.3.1](https://github.com/RivenZoo/sqlagent/compare/v1.3.0...v1.3.1) (2018-11-24)
+
+
+### Bug Fixes
+
+* fix extract columns from embedded table ([9f8c852](https://github.com/RivenZoo/sqlagent/commit/9f8c852))
 
 
 
