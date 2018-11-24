@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	sq "gopkg.in/Masterminds/squirrel.v1"
 	"os"
+	"sort"
 	"strings"
 	"testing"
 	"time"
@@ -173,7 +174,17 @@ func TestSqlAgent_ModelColumns(t *testing.T) {
 		CreateTime time.Time
 	}
 	columns := sa.ModelColumns(testTable{}, "id")
-	assert.Equal(t, []string{"name", "createtime"}, columns)
+	sort.Strings(columns)
+	assert.Equal(t, []string{"createtime", "name"}, columns)
+
+	type deriveTable struct {
+		testTable
+		Col1 int
+		Col2 string
+	}
+	columns = sa.ModelColumns(deriveTable{}, "id")
+	sort.Strings(columns)
+	assert.Equal(t, []string{"col1", "col2", "createtime", "name",}, columns)
 }
 
 func TestMain(m *testing.M) {

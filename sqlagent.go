@@ -182,6 +182,7 @@ func (a *SqlAgent) SetDBMapper(mapper *reflectx.Mapper) {
 // ignoreColumns should be the same with column name that is converted by sqlx.DB.Mapper.
 func (a *SqlAgent) ModelColumns(model interface{}, ignoreColumns ...string) []string {
 	fieldMap := a.db.Mapper.TypeMap(reflect.TypeOf(model))
+	valueMap := a.db.Mapper.FieldMap(reflect.Indirect(reflect.ValueOf(model)))
 
 	columns := make([]string, 0)
 	for _, v := range fieldMap.Index {
@@ -189,7 +190,9 @@ func (a *SqlAgent) ModelColumns(model interface{}, ignoreColumns ...string) []st
 		if isIgnoreFields(name, ignoreColumns) {
 			continue
 		}
-		columns = append(columns, name)
+		if _, ok := valueMap[name]; ok {
+			columns = append(columns, name)
+		}
 	}
 	return columns
 }
