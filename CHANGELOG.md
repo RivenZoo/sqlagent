@@ -1,5 +1,20 @@
 <a name=""></a>
-# [](https://github.com/RivenZoo/sqlagent/compare/v1.2.1...v) (2018-10-25)
+# [](https://github.com/RivenZoo/sqlagent/compare/v1.3.0...v) (2018-11-24)
+
+
+
+<a name="1.3.0"></a>
+# [1.3.0](https://github.com/RivenZoo/sqlagent/compare/v1.2.1...v1.3.0) (2018-11-24)
+
+
+### Bug Fixes
+
+* allow passing a struct to SetUpdateColumns and InsertModelBuilder ([03228bf](https://github.com/RivenZoo/sqlagent/commit/03228bf))
+
+
+### Features
+
+* add new method ([13a1427](https://github.com/RivenZoo/sqlagent/commit/13a1427))
 
 
 
