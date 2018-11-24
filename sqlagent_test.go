@@ -1,15 +1,16 @@
 package sqlagent
 
 import (
-	"testing"
-	"github.com/RivenZoo/dsncfg"
-	"github.com/jmoiron/sqlx/reflectx"
-	sq "gopkg.in/Masterminds/squirrel.v1"
-	"strings"
 	"context"
+	"github.com/RivenZoo/dsncfg"
 	_ "github.com/go-sql-driver/mysql"
-	"os"
+	"github.com/jmoiron/sqlx/reflectx"
 	"github.com/stretchr/testify/assert"
+	sq "gopkg.in/Masterminds/squirrel.v1"
+	"os"
+	"strings"
+	"testing"
+	"time"
 )
 
 type tableUser struct {
@@ -148,6 +149,31 @@ ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`,
 			sa.DB().Exec(dropSql[i])
 		}()
 	}
+}
+
+func TestSqlAgent_ModelColumns(t *testing.T) {
+	dbName := "myapp_test"
+	user := "travis"
+	passwd := ""
+	testCfg := dsncfg.Database{
+		Host:     "127.0.0.1",
+		Port:     3306,
+		Name:     dbName,
+		Type:     "mysql",
+		User:     user,
+		Password: passwd,
+	}
+	sa, err := NewSqlAgent(&testCfg)
+	if !assert.Nil(t, err) {
+		t.FailNow()
+	}
+	type testTable struct {
+		ID         string
+		Name       string
+		CreateTime time.Time
+	}
+	columns := sa.ModelColumns(testTable{}, "id")
+	assert.Equal(t, []string{"name", "createtime"}, columns)
 }
 
 func TestMain(m *testing.M) {
