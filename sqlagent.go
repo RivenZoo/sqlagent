@@ -96,7 +96,7 @@ func (a *SqlAgent) SelectBuilder(columns ...string) sq.SelectBuilder {
 
 func (a *SqlAgent) InsertModelBuilder(into string, model interface{}, ignoreColumns ...string) sq.InsertBuilder {
 	fieldMap := a.db.Mapper.TypeMap(reflect.TypeOf(model))
-	valueMap := a.db.Mapper.FieldMap(reflect.ValueOf(model).Elem())
+	valueMap := a.db.Mapper.FieldMap(reflect.Indirect(reflect.ValueOf(model)))
 
 	builder := sq.Insert(into)
 
@@ -121,7 +121,7 @@ func (a *SqlAgent) InsertModelBuilder(into string, model interface{}, ignoreColu
 
 func (a *SqlAgent) SetUpdateColumns(updateBuilder sq.UpdateBuilder, model interface{}, ignoreColumns ...string) sq.UpdateBuilder {
 	fieldMap := a.db.Mapper.TypeMap(reflect.TypeOf(model))
-	valueMap := a.db.Mapper.FieldMap(reflect.ValueOf(model).Elem())
+	valueMap := a.db.Mapper.FieldMap(reflect.Indirect(reflect.ValueOf(model)))
 	clauses := make(map[string]interface{})
 
 	for _, v := range fieldMap.Index {

@@ -34,7 +34,7 @@ func testExecSql(sa *SqlAgent, table string, t *testing.T) {
 		t.Fatalf("ExecContext error: %v, sql: %s,%v", err, s, e)
 	}
 
-	insertBuilder = sa.InsertModelBuilder(table, &tableUser{
+	insertBuilder = sa.InsertModelBuilder(table, tableUser{
 		Name: userName,
 		UID:  int64(uid + 1),
 	}, "id")
