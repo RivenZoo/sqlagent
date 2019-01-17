@@ -1,6 +1,8 @@
 # Sqlagent
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/RivenZoo/sqlagent.svg?branch=master)](https://travis-ci.org/RivenZoo/sqlagent)
+[![Godoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/RivenZoo/sqlagent)
 
 A golang sql wrap with sqlx and squirrel
 
