@@ -3,6 +3,7 @@ package sqlagent
 import (
 	"context"
 	"database/sql"
+	"github.com/RivenZoo/dsncfg"
 	"github.com/jmoiron/sqlx"
 	"github.com/jmoiron/sqlx/reflectx"
 	sq "gopkg.in/Masterminds/squirrel.v1"
@@ -55,6 +56,11 @@ func SetUpdateColumns(updateBuilder sq.UpdateBuilder, model interface{}, ignoreC
 // SetDBMapper set mapper for module sqlagent
 func SetDBMapper(mapper *reflectx.Mapper) {
 	defaultAgent.SetDBMapper(mapper)
+}
+
+// SetConnectionConfig set conenction for module sqlagent.
+func SetConnectionConfig(cfg dsncfg.ConnectionConfig) {
+	defaultAgent.SetConnectionConfig(cfg)
 }
 
 // ModelColumns use module sqlagent to extract model columns.

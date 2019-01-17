@@ -9,6 +9,7 @@ import (
 	"github.com/jmoiron/sqlx/reflectx"
 	sq "gopkg.in/Masterminds/squirrel.v1"
 	"reflect"
+	"time"
 )
 
 var (
@@ -175,6 +176,13 @@ func (a *SqlAgent) SelectContext(ctx context.Context, builder sq.Sqlizer, dest i
 // Default mapper use tag `db`, if no tags it will use lower case field name as column name.
 func (a *SqlAgent) SetDBMapper(mapper *reflectx.Mapper) {
 	a.db.Mapper = mapper
+}
+
+// SetConnectionConfig set connection config to sql.DB.
+func (a *SqlAgent) SetConnectionConfig(cfg dsncfg.ConnectionConfig) {
+	a.db.SetMaxOpenConns(cfg.MaxOpenConnections)
+	a.db.SetMaxIdleConns(cfg.MaxIdleConnections)
+	a.db.SetConnMaxLifetime(time.Duration(cfg.MaxLifeTime) * time.Second)
 }
 
 // ModelColumns use sqlx.DB.Mapper to extract model table columns name.

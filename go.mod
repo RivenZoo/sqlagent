@@ -1,7 +1,7 @@
 module sqlagent
 
 require (
-	github.com/RivenZoo/dsncfg v1.0.1
+	github.com/RivenZoo/dsncfg v1.1.1
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-sql-driver/mysql v1.4.0
 	github.com/jmoiron/sqlx v1.2.0

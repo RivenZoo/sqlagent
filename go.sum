@@ -2,6 +2,8 @@ github.com/RivenZoo/dsncfg v1.0.0 h1:td8kKH0awGWkcvqAJuk4Tgw+oOniRRoVXavZzdxyVCU
 github.com/RivenZoo/dsncfg v1.0.0/go.mod h1:OUWi4kjNTK8y1eJ/27+xQ3V3f49iilSQWqH/AKEjVso=
 github.com/RivenZoo/dsncfg v1.0.1 h1:iujBFTTS9DsEPPb+0ayyHxoIUlYYdlftVjuxM7MsCuQ=
 github.com/RivenZoo/dsncfg v1.0.1/go.mod h1:OUWi4kjNTK8y1eJ/27+xQ3V3f49iilSQWqH/AKEjVso=
+github.com/RivenZoo/dsncfg v1.1.1 h1:5j1c4A/gXNtuXi4/tb4eBzroK0N0OyCxUY8r80tNRQ8=
+github.com/RivenZoo/dsncfg v1.1.1/go.mod h1:OUWi4kjNTK8y1eJ/27+xQ3V3f49iilSQWqH/AKEjVso=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/go-sql-driver/mysql v1.4.0 h1:7LxgVwFb2hIQtMm87NdgAVfXjnt4OePseqT1tKx+opk=
