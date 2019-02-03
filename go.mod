@@ -1,4 +1,4 @@
-module sqlagent
+module github.com/RivenZoo/sqlagent
 
 require (
 	github.com/RivenZoo/dsncfg v1.1.1
