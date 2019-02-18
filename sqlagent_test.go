@@ -188,9 +188,9 @@ func TestSqlAgent_ModelColumns(t *testing.T) {
 }
 
 func TestSqlAgent_BuildSql(t *testing.T) {
-	dbName := "test"
-	user := "root"
-	passwd := "king+5688"
+	dbName := "myapp_test"
+	user := "travis"
+	passwd := ""
 	testCfg := dsncfg.Database{
 		Host:     "127.0.0.1",
 		Port:     3306,
