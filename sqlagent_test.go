@@ -187,6 +187,44 @@ func TestSqlAgent_ModelColumns(t *testing.T) {
 	assert.Equal(t, []string{"col1", "col2", "createtime", "name",}, columns)
 }
 
+func TestSqlAgent_BuildSql(t *testing.T) {
+	dbName := "myapp_test"
+	user := "travis"
+	passwd := ""
+	testCfg := dsncfg.Database{
+		Host:     "127.0.0.1",
+		Port:     3306,
+		Name:     dbName,
+		Type:     "mysql",
+		User:     user,
+		Password: passwd,
+	}
+	sa, err := NewSqlAgent(&testCfg)
+	if !assert.Nil(t, err) {
+		t.FailNow()
+	}
+	sa.SetDBMapper(reflectx.NewMapperFunc("json", strings.ToLower))
+
+	type testTable struct {
+		ID         string    "json:\"`id`\""
+		Name       string    `json:"name"`
+		From       string    "json:\"`from`\""
+		CreateTime time.Time `json:"create_time"`
+	}
+	m := &testTable{}
+	builder := sa.InsertModelBuilder("test_table", m)
+	sqlStr, args, err := builder.ToSql()
+	assert.Nil(t, err)
+	assert.True(t, len(args) == 4)
+	t.Log(sqlStr)
+
+	builder = sa.InsertBuilder("test_table").Columns("id", "name", "from").Values("0", "name", "table")
+	sqlStr, args, err = builder.ToSql()
+	assert.Nil(t, err)
+	assert.True(t, len(args) == 3)
+	t.Log(sqlStr)
+}
+
 func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
